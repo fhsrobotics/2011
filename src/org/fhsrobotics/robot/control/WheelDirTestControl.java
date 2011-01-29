@@ -65,7 +65,7 @@ public class WheelDirTestControl extends Control
 				case 4:   //Test the forklift upwards.
 					drive.setForklift(motorSpeed);
 					break;
-				case 5:
+				case 5:   //Test the forklift downwards.
 					drive.setForklift(-motorSpeed);
 					break;
 			}
@@ -75,11 +75,13 @@ public class WheelDirTestControl extends Control
 			drive.setWheels(0, 0, 0, 0);
 			drive.setForklift(0);
 		}
-		//If the joystick's second button is pressed, 
+		//If the joystick's second button is pressed, switch to the next test.
 		if(joy.getRawButton(2) && !joy2last)
 		{
 			joy2last = true;
 			testnum++;
+			if(testnum > 5) //Cycle to the first test if the last is surpassed.
+				testnum = 0;
 		}
 		joy2last = joy.getRawButton(2);
 	}
