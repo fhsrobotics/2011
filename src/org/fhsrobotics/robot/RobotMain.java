@@ -11,6 +11,7 @@ package org.fhsrobotics.robot;
 import edu.wpi.first.wpilibj.*;
 
 import edu.wpi.first.wpilibj.camera.AxisCamera;
+import org.fhsrobotics.robot.control.AutonomousLineFollowControl;
 import org.fhsrobotics.robot.control.Control;
 import org.fhsrobotics.robot.control.JoystickControl;
 
@@ -36,10 +37,12 @@ public class RobotMain extends IterativeRobot
 	{
 		//Kill the watchdog.
 		Watchdog.getInstance().setEnabled(false);
-
+		//Wait a while, so that the robot can recover from this unexpected loss.
+		//Well, really so that the person that turned on the robot can get to a
+		// safe distance before the robot turns on in autonomous mode.
 		Timer.delay(10);
 
-		//Initialize
+		//Initialize the drive.
 		drive = new Drive();
     }
 
@@ -48,6 +51,8 @@ public class RobotMain extends IterativeRobot
 	 */
 	public void autonomousInit()
 	{
+		//Initialize the autonomous control.
+		control = new AutonomousLineFollowControl(drive);
 	}
 
     /**
@@ -55,7 +60,7 @@ public class RobotMain extends IterativeRobot
      */
     public void autonomousPeriodic()
 	{
-
+		control.update();
 	}
 
 	/**

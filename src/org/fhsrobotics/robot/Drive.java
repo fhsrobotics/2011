@@ -31,6 +31,9 @@ public class Drive
 
 	/**
 	 * Sets the speed of each wheel motor individually.
+	 * The following correspondences are guaranteed:
+	 * 1 means that the wheel specified will push the robot forwards.
+	 * -1 pushes the robot backwards.
 	 */
 	public void setWheels(double frontRight, double frontLeft,
 	                   double rearRight,  double rearLeft)
