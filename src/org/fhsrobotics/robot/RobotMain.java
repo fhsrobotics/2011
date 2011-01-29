@@ -11,6 +11,8 @@ package org.fhsrobotics.robot;
 import edu.wpi.first.wpilibj.*;
 
 import edu.wpi.first.wpilibj.camera.AxisCamera;
+import org.fhsrobotics.robot.control.Control;
+import org.fhsrobotics.robot.control.JoystickControl;
 
 
 /**
@@ -20,8 +22,11 @@ import edu.wpi.first.wpilibj.camera.AxisCamera;
  */
 public class RobotMain extends IterativeRobot
 {
-	//How the robot moves around.
+	//How motors are driven.
 	public Drive drive;
+
+	//How does control map to the robot?
+	public Control control;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -38,6 +43,9 @@ public class RobotMain extends IterativeRobot
 		drive = new Drive();
     }
 
+	/**
+	 * This function is called at the beginning of the autonomous period.
+	 */
 	public void autonomousInit()
 	{
 	}
@@ -50,12 +58,20 @@ public class RobotMain extends IterativeRobot
 
 	}
 
+	/**
+	 * This function is called at the beginning of the teleoperated period.
+	 */
+	public void teleopInit()
+	{
+		//Initialize the control method.
+		control = new JoystickControl(drive);
+	}
+
     /**
      * This function is called periodically during operator control.
      */
     public void teleopPeriodic()
 	{
-		
+		control.update();
     }
-
 }
