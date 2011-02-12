@@ -16,16 +16,26 @@ public class JoystickControl extends Control
 	{
 		super(drive);
 		rJoy = new Joystick(1);
-		lJoy = new Joystick(2);
-	}
+		lJoy = new Joystick(2);	}
 
 	public void update()
 	{
 		drive.setWheels(
-			Math.max(Math.min(rJoy.getY() + lJoy.getY() - rJoy.getX() - lJoy.getX(), 1),-1),
-			Math.max(Math.min(rJoy.getY() + lJoy.getY() + rJoy.getX() + lJoy.getX(), 1),-1),
-			Math.max(Math.min(rJoy.getY() + lJoy.getY() + rJoy.getX() - lJoy.getX(), 1),-1),
-			Math.max(Math.min(rJoy.getY() + lJoy.getY() - rJoy.getX() + lJoy.getX(), 1),-1)
+			Math.max(Math.min(- rJoy.getY() - lJoy.getY()
+			                  - rJoy.getX() - lJoy.getX(), 1),-1),
+			Math.max(Math.min(- rJoy.getY() - lJoy.getY()
+			                  + rJoy.getX() + lJoy.getX(), 1),-1),
+			Math.max(Math.min(- rJoy.getY() - lJoy.getY()
+			                  - rJoy.getX() + lJoy.getX(), 1),-1),
+			Math.max(Math.min(- rJoy.getY() - lJoy.getY()
+			                  + rJoy.getX() - lJoy.getX(), 1),-1)
 		);
+
+		double forkspeed = (rJoy.getRawButton(3)||lJoy.getRawButton(3)?1:0)
+			             - (rJoy.getRawButton(2)||lJoy.getRawButton(2)?1:0);
+		drive.setForklift(
+			Math.max(Math.min(forkspeed, 1),-1)
+		);
+//		System.out.println("Right: "+rJoy.getX()+","+rJoy.getY()+" Left: "+lJoy.getX()+","+lJoy.getY());
 	}
 }

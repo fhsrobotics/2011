@@ -39,8 +39,8 @@ public class Drive
 	                   double rearRight,  double rearLeft)
 	{
 		fRight.set(frontRight);
-		fLeft.set(frontLeft);
-		rRight.set(rearRight);
+		fLeft.set(-frontLeft);
+		rRight.set(-rearRight);
 		rLeft.set(rearLeft);
 	}
 

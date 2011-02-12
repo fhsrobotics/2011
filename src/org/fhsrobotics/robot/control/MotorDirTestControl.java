@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
  * Use the secondary button on a joystick to move to the next.
  * @author 2036
  */
-public class WheelDirTestControl extends Control
+public class MotorDirTestControl extends Control
 {
 	private Joystick joy;
 	//Makes the joystick button only advance one test at a time.
@@ -27,7 +27,7 @@ public class WheelDirTestControl extends Control
 	 */
 	private final double testTime = 0.5;
 
-	public WheelDirTestControl(Drive drive)
+	public MotorDirTestControl(Drive drive)
 	{
 		super(drive);
 
@@ -82,6 +82,7 @@ public class WheelDirTestControl extends Control
 			testnum++;
 			if(testnum > 5) //Cycle to the first test if the last is surpassed.
 				testnum = 0;
+			System.out.println("Test running: "+testnum);
 		}
 		joy2last = joy.getRawButton(2);
 	}
