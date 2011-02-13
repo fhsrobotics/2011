@@ -27,7 +27,9 @@ public class AutonomousLineFollowControl extends Control
 	DigitalInput lfLeft, lfCenter, lfRight;
 	Gyro gyro;
 	
-	double origRot;
+	double origRot; // original rotation of robot in degrees
+	
+	int dir; // where the line was last detected, 1 = left, 0 = center, -1 = right
 
 	///TODO: Make this class name shorter while maintaining the meaning!
 	public AutonomousLineFollowControl(Drive drive)
@@ -38,9 +40,11 @@ public class AutonomousLineFollowControl extends Control
 		lfCenter = new DigitalInput(2);
 		lfRight = new DigitalInput(3);
 		
+		dir = 0; // start going forwards
+		
 		//gyro = new Gyro(4);
 		
-		//origRot = gyro.getAngle(); //degrees
+		//origRot = gyro.getAngle(); // degrees
 	}
 
 	public void update()
@@ -49,9 +53,14 @@ public class AutonomousLineFollowControl extends Control
 		
 		double x, y;
 		
-		y = 0.3;
+		y = 0.2;
 		
-		x = 0;
+		if(lfLeft.get() || lfCenter.get() || lfRight.get())
+		{
+			dir = lfLeft.get()?1:0 - lfRight.get()?1:0;
+		}
+		
+		x = 0.2 * dir;
 		
 		drive.move(x, y, rot);
 	}
