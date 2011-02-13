@@ -6,6 +6,7 @@
 package org.fhsrobotics.robot.control;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Gyro;
 import org.fhsrobotics.robot.Drive;
 
 /**
@@ -37,9 +38,9 @@ public class AutonomousLineFollowControl extends Control
 		lfCenter = new DigitalInput(2);
 		lfRight = new DigitalInput(3);
 		
-		gyro = new Gyro(4);
+		//gyro = new Gyro(4);
 		
-		origRot = gyro.getAngle(); //degrees
+		//origRot = gyro.getAngle(); //degrees
 	}
 
 	public void update()

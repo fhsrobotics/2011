@@ -53,7 +53,7 @@ public class RobotMain extends IterativeRobot
 	public void autonomousInit()
 	{
 		//Initialize the autonomous control.
-		control = new LineTrackerTestingControl(drive);
+		control = new AutonomousLineFollowControl(drive);
 	}
 
     /**
