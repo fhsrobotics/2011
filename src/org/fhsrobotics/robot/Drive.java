@@ -15,9 +15,10 @@ public class Drive
 		3: Back right motor
 		4: Back left motor
 		5: Forklift elevation winch
+		6: Forklift elevation winch reverse
 	*/
 	public Jaguar fRight, fLeft, rRight, rLeft;
-	public Jaguar forklift;
+	public Jaguar forklift1, forklift2;
 
 	public Drive()
 	{
@@ -26,7 +27,8 @@ public class Drive
 		rRight = new Jaguar(3);
 		rLeft = new Jaguar(4);
 
-		forklift = new Jaguar(5);
+		forklift1 = new Jaguar(5);
+		forklift2 = new Jaguar(6);
 	}
 
 	/**
@@ -66,6 +68,7 @@ public class Drive
 	 */
 	public void setForklift(double spd)
 	{
-		forklift.set(spd);
+		forklift1.set(spd);
+		forklift2.set(-spd);
 	}
 }

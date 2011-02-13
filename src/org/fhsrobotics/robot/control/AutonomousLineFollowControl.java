@@ -55,7 +55,7 @@ public class AutonomousLineFollowControl extends Control
 		System.out.print(" lfRight ");
 		System.out.println(sense.lfRight.get() ? "TRUE!" : "FALSE");
 		
-		x = 0.2 * dir;
+		x = 0.12 * dir;
 		
 		drive.move(x, y, rot);
 	}
