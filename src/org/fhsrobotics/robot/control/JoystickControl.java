@@ -20,16 +20,7 @@ public class JoystickControl extends Control
 
 	public void update()
 	{
-		drive.setWheels(
-			Math.max(Math.min(- rJoy.getY() - lJoy.getY()
-			                  - rJoy.getX() - lJoy.getX(), 1),-1),
-			Math.max(Math.min(- rJoy.getY() - lJoy.getY()
-			                  + rJoy.getX() + lJoy.getX(), 1),-1),
-			Math.max(Math.min(- rJoy.getY() - lJoy.getY()
-			                  - rJoy.getX() + lJoy.getX(), 1),-1),
-			Math.max(Math.min(- rJoy.getY() - lJoy.getY()
-			                  + rJoy.getX() - lJoy.getX(), 1),-1)
-		);
+		drive.move(-rJoy.getX(), -rJoy.getY()-lJoy.getY(), -lJoy.getX());
 
 		double forkspeed = (rJoy.getRawButton(3)||lJoy.getRawButton(3)?1:0)
 			             - (rJoy.getRawButton(2)||lJoy.getRawButton(2)?1:0);

@@ -43,6 +43,22 @@ public class Drive
 		rRight.set(-rearRight);
 		rLeft.set(rearLeft);
 	}
+	
+	/**
+	 * Interprets translation and rotation inputs to make the robot move.
+	 * @param	x	1 = right, -1 = left
+	 * @param	y	1 = forwards, -1 = backwards
+	 * @param	rot	1 = ccw, -1 = cw
+	 */
+	public void move(double x, double y, double rot)
+	{
+		setWheels(
+			Math.max(Math.min(y + rot + x, 1),-1),
+			Math.max(Math.min(y - rot - x, 1),-1),
+			Math.max(Math.min(y + rot - x, 1),-1),
+			Math.max(Math.min(y - rot + x, 1),-1)
+		);
+	}
 
 	/**
 	 * Sets the speed of the forklift winch.
