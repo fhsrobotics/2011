@@ -1,6 +1,7 @@
 package org.fhsrobotics.robot.control;
 
 import org.fhsrobotics.robot.Drive;
+import org.fhsrobotics.robot.Sense;
 
 /**
  * Controls the robot.
@@ -14,10 +15,12 @@ public abstract class Control
 {
 	//Used to control motors on the robot.
 	public Drive drive;
+	public Sense sense;
 
-	public Control(Drive drive)
+	public Control(Drive drive, Sense sense)
 	{
 		this.drive = drive;
+		this.sense = sense;
 	}
 
 	/**

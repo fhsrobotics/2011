@@ -27,6 +27,9 @@ public class RobotMain extends IterativeRobot
 	//How motors are driven.
 	public Drive drive;
 
+	//How the sensors are polled.
+	public Sense sense;
+
 	//How does control map to the robot?
 	public Control control;
 
@@ -45,6 +48,9 @@ public class RobotMain extends IterativeRobot
 
 		//Initialize the drive.
 		drive = new Drive();
+
+		//Initialize the sensors,
+		sense = new Sense();
     }
 
 	/**
@@ -53,7 +59,7 @@ public class RobotMain extends IterativeRobot
 	public void autonomousInit()
 	{
 		//Initialize the autonomous control.
-		control = new AutonomousLineFollowControl(drive);
+		control = new AutonomousLineFollowControl(drive, sense);
 	}
 
     /**
@@ -72,7 +78,7 @@ public class RobotMain extends IterativeRobot
 		//Initialize the control method.
 		control = new JoystickControl(drive);
 	}
-
+	
     /**
      * This function is called periodically during operator control.
      */
@@ -80,4 +86,14 @@ public class RobotMain extends IterativeRobot
 	{
 		control.update();
     }
+
+	/**
+	 * When the robot is disabled, try to garbage collect the control.
+	 */
+	public void disabledInit()
+	{
+		super.disabledInit();
+		control = null;
+		System.gc();
+	}
 }

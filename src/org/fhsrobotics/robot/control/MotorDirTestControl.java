@@ -29,7 +29,7 @@ public class MotorDirTestControl extends Control
 
 	public MotorDirTestControl(Drive drive)
 	{
-		super(drive);
+		super(drive, null);
 
 		joy = new Joystick(1);
 

@@ -14,7 +14,7 @@ public class JoystickControl extends Control
 
 	public JoystickControl(Drive drive)
 	{
-		super(drive);
+		super(drive, null);
 		rJoy = new Joystick(1);
 		lJoy = new Joystick(2);	}
 
