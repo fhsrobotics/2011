@@ -25,14 +25,11 @@ public class AutonomousLineFollowControl extends Control
 
 	boolean reachedPole;
 	
-	enum LineState 
-	{
-		GET_OFF_TUBE,
-		PREPARE_TUBE,
-		APPROACH_RACK,
-		LOWER_ON_RACK,
-		DEPROACH_RACK
-	}
+	final int GET_OFF_TUBE = 0;
+	final int PREPARE_TUBE = 1;
+	final int APPROACH_RACK = 2;
+	final int LOWER_ON_RACK = 3;
+	final int DEPROACH_RACK = 4;
 
 	///TODO: Make this class name shorter while maintaining the meaning!
 	public AutonomousLineFollowControl(Drive drive, Sense sense)
@@ -43,7 +40,7 @@ public class AutonomousLineFollowControl extends Control
 
 		reachedPole = false;
 		
-		state = LineState.GET_OFF_TUBE;
+		state = GET_OFF_TUBE;
 		
 		//origRot = sense.gyro.getAngle(); // degrees
 	}
@@ -57,17 +54,17 @@ public class AutonomousLineFollowControl extends Control
 
 		switch(state)
 		{
-			case LineState.GET_OFF_TUBE:
+			case GET_OFF_TUBE:
 				y = 0;
 				x = 0;
-				state = LineState.PREPARE_TUBE;
+				state = PREPARE_TUBE;
 				break;
-			case LineState.PREPARE_TUBE:
+			case PREPARE_TUBE:
 				y = 0;
 				x = 0;
-				state = LineState.APPROACH_RACK;
+				state = APPROACH_RACK;
 				break;
-			case LineState.APPROACH_RACK:
+			case APPROACH_RACK:
 				if(sense.lfCenter.get())
 				{
 					dir = 0;
@@ -80,19 +77,19 @@ public class AutonomousLineFollowControl extends Control
 					   sense.lfCenter.get() && 
 					   sense.lfRight.get())
 					{
-						state = LineState.LOWER_ON_RACK;
+						state = LOWER_ON_RACK;
 					}
 					dir = (sense.lfLeft.get()?1:0) - (sense.lfRight.get()?1:0);
 				}
 				x = 0.25 * dir;
 				y = 0.25;
 				break;
-			case LineState.LOWER_ON_RACK:
+			case LOWER_ON_RACK:
 				y = 0;
 				x = 0;
-				state = LineState.DEPROACH_RACK;
+				state = DEPROACH_RACK;
 				break;
-			case LineState.DEPROACH_RACK:
+			case DEPROACH_RACK:
 				y = 0;
 				x = 0;
 				break;
