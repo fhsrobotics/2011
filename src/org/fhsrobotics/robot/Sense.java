@@ -22,8 +22,6 @@ public class Sense
 	 */
 	public DigitalInput lfLeft, lfCenter, lfRight;
 
-	public Gyro gyro;
-
 	public Sense()
 	{
 		lfLeft = new DigitalInput(1);

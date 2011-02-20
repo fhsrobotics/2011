@@ -21,42 +21,60 @@ public class AutonomousLineFollowControl extends Control
 	
 	int dir; // where the line was last detected, 1 = left, 0 = center, -1 = right
 
+	boolean reachedPole;
+
 	///TODO: Make this class name shorter while maintaining the meaning!
 	public AutonomousLineFollowControl(Drive drive, Sense sense)
 	{
 		super(drive, sense);
 		
 		dir = 0; // start going forwards
-		
-		//origRot = gyro.getAngle(); // degrees
+
+		reachedPole = false;
+
+		//origRot = sense.gyro.getAngle(); // degrees
 	}
 
 	public void update()
 	{
-		double rot = 0; // TODO: Make robot counter rotation drift
-		
+		double rot = 0;//origRot - sense.gyro.getAngle();
+		/*System.out.print("Gyro: ");
+		System.out.print(origRot);
+		System.out.print("    ");
+		System.out.print(sense.gyro.getAngle());
+		System.out.println();*/
+
 		double x, y;
-		
-		y = 0.0;
 
-		if(sense.lfCenter.get())
+		if(reachedPole == false)
 		{
-			dir = 0;
+			if(sense.lfCenter.get())
+			{
+				dir = 0;
+			}
+			else if(sense.lfLeft.get() || sense.lfCenter.get() || sense.lfRight.get())
+			{
+				if(sense.lfLeft.get() && sense.lfCenter.get() && sense.lfRight.get())
+				{
+					reachedPole = true;
+				}
+				dir = (sense.lfLeft.get()?1:0) - (sense.lfRight.get()?1:0);
+			}
+			y = 0.25;
 		}
-		else if(sense.lfLeft.get() || sense.lfCenter.get() || sense.lfRight.get())
+		else
 		{
-			dir = (sense.lfLeft.get()?1:0) - (sense.lfRight.get()?1:0);
+
 		}
 
-		System.out.print("lfLeft ");
-		System.out.print(sense.lfLeft.get() ? "TRUE!" : "FALSE");
-		System.out.print(" lfCenter ");
-		System.out.print(sense.lfCenter.get() ? "TRUE!" : "FALSE");
-		System.out.print(" lfRight ");
-		System.out.println(sense.lfRight.get() ? "TRUE!" : "FALSE");
+		System.out.print(" lfL ");
+		System.out.print(sense.lfLeft.get() ? "tr   " : "  lse");
+		System.out.print(" lfC ");
+		System.out.print(sense.lfCenter.get() ? "tr   " : "  lse");
+		System.out.print(" lfR ");
+		System.out.println(sense.lfRight.get() ? "tr   " : "  lse");
 		
-		x = 0.12 * dir;
-		
-		drive.move(x, y, rot);
+		x = 0.25 * dir;		
+		//drive.move(x, y, rot);
 	}
 }

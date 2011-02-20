@@ -21,7 +21,7 @@ public class MotorDirTestControl extends Control
 	/**
 	 * The speed at which the test will run, a fraction of total
 	 */
-	private final double motorSpeed = 0.5;
+	private final double motorSpeed = 0.2;
 	/**
 	 * The time each test will remain active.
 	 */
