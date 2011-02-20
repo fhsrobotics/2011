@@ -20,8 +20,19 @@ public class AutonomousLineFollowControl extends Control
 	double origRot; // original rotation of robot in degrees
 	
 	int dir; // where the line was last detected, 1 = left, 0 = center, -1 = right
+	
+	LineState state;
 
 	boolean reachedPole;
+	
+	enum LineState 
+	{
+		GET_OFF_TUBE,
+		PREPARE_TUBE,
+		APPROACH_RACK,
+		LOWER_ON_RACK,
+		DEPROACH_RACK
+	}
 
 	///TODO: Make this class name shorter while maintaining the meaning!
 	public AutonomousLineFollowControl(Drive drive, Sense sense)
@@ -31,50 +42,69 @@ public class AutonomousLineFollowControl extends Control
 		dir = 0; // start going forwards
 
 		reachedPole = false;
-
+		
+		state = LineState.GET_OFF_TUBE;
+		
 		//origRot = sense.gyro.getAngle(); // degrees
 	}
 
 	public void update()
 	{
-		double rot = 0;//origRot - sense.gyro.getAngle();
-		/*System.out.print("Gyro: ");
-		System.out.print(origRot);
-		System.out.print("    ");
-		System.out.print(sense.gyro.getAngle());
-		System.out.println();*/
+		double rot = 0;
 
 		double x, y;
 
-		if(reachedPole == false)
+
+		switch(state)
 		{
-			if(sense.lfCenter.get())
-			{
-				dir = 0;
-			}
-			else if(sense.lfLeft.get() || sense.lfCenter.get() || sense.lfRight.get())
-			{
-				if(sense.lfLeft.get() && sense.lfCenter.get() && sense.lfRight.get())
+			case LineState.GET_OFF_TUBE:
+				y = 0;
+				x = 0;
+				state = LineState.PREPARE_TUBE;
+				break;
+			case LineState.PREPARE_TUBE:
+				y = 0;
+				x = 0;
+				state = LineState.APPROACH_RACK;
+				break;
+			case LineState.APPROACH_RACK:
+				if(sense.lfCenter.get())
 				{
-					reachedPole = true;
+					dir = 0;
 				}
-				dir = (sense.lfLeft.get()?1:0) - (sense.lfRight.get()?1:0);
-			}
-			y = 0.25;
+				else if(sense.lfLeft.get() || 
+					    sense.lfCenter.get() || 
+						sense.lfRight.get())
+				{
+					if(sense.lfLeft.get() && 
+					   sense.lfCenter.get() && 
+					   sense.lfRight.get())
+					{
+						state = LineState.LOWER_ON_RACK;
+					}
+					dir = (sense.lfLeft.get()?1:0) - (sense.lfRight.get()?1:0);
+				}
+				x = 0.25 * dir;
+				y = 0.25;
+				break;
+			case LineState.LOWER_ON_RACK:
+				y = 0;
+				x = 0;
+				state = LineState.DEPROACH_RACK;
+				break;
+			case LineState.DEPROACH_RACK:
+				y = 0;
+				x = 0;
+				break;
 		}
-		else
-		{
 
-		}
-
-		System.out.print(" lfL ");
-		System.out.print(sense.lfLeft.get() ? "tr   " : "  lse");
-		System.out.print(" lfC ");
-		System.out.print(sense.lfCenter.get() ? "tr   " : "  lse");
-		System.out.print(" lfR ");
-		System.out.println(sense.lfRight.get() ? "tr   " : "  lse");
-		
-		x = 0.25 * dir;		
-		//drive.move(x, y, rot);
+		System.out.print("L ");
+		System.out.print(sense.lfLeft.get() ? "1" : "0");
+		System.out.print(" C ");
+		System.out.print(sense.lfCenter.get() ? "1" : "0");
+		System.out.print(" R ");
+		System.out.println(sense.lfRight.get() ? "1" : "0");
+			
+		drive.move(x, y, rot);
 	}
 }

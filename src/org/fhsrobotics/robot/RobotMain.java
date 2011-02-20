@@ -41,10 +41,9 @@ public class RobotMain extends IterativeRobot
 	{
 		//Kill the watchdog.
 		Watchdog.getInstance().setEnabled(false);
-		//Wait a while, so that the robot can recover from this unexpected loss.
-		//Well, really so that the person that turned on the robot can get to a
-		// safe distance before the robot turns on in autonomous mode.
-		Timer.delay(10);
+		//Eh, screw it, we don't need to get away from the robot
+		//It won't kill us, right?
+		//... Right?
 
 		//Initialize the drive.
 		drive = new Drive();
