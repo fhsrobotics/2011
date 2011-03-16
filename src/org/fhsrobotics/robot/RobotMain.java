@@ -33,6 +33,8 @@ public class RobotMain extends IterativeRobot
 	//How does control map to the robot?
 	public Control control;
 
+	public static double timeStep;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -46,10 +48,10 @@ public class RobotMain extends IterativeRobot
 		//... Right?
 
 		//Initialize the drive.
-		drive = new Drive();
+		Drive.inst();
 
 		//Initialize the sensors,
-		sense = new Sense();
+		Sense.inst();
     }
 
 	/**
@@ -58,7 +60,7 @@ public class RobotMain extends IterativeRobot
 	public void autonomousInit()
 	{
 		//Initialize the autonomous control.
-		control = new AutonomousLineFollowControl(drive, sense);
+		control = new AutonomousLineFollowControl();
 	}
 
     /**
@@ -75,7 +77,7 @@ public class RobotMain extends IterativeRobot
 	public void teleopInit()
 	{
 		//Initialize the control method.
-		control = new JoystickControl(drive);
+		control = new JoystickControl();
 	}
 	
     /**

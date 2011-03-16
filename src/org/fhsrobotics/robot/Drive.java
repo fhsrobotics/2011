@@ -8,6 +8,14 @@ import edu.wpi.first.wpilibj.Jaguar;
  */
 public class Drive
 {
+	private static Drive instance;
+	public static Drive inst()
+	{
+		if(instance == null)
+			instance = new Drive();
+		return instance;
+	}
+
 	/*
 		PWM
 		1: Front right motor

@@ -1,6 +1,5 @@
 package org.fhsrobotics.robot.control;
 
-import org.fhsrobotics.robot.Drive;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -16,9 +15,10 @@ public class JoystickControl extends Control
 	//If the toggle was pressed last update.
 	boolean enableEdge;
 	
-	public JoystickControl(Drive drive)
+	public JoystickControl()
 	{
-		super(drive, null);
+		super();
+
 		rJoy = new Joystick(1);
 		lJoy = new Joystick(2);
 
@@ -44,9 +44,19 @@ public class JoystickControl extends Control
 		double forkspeed = (rJoy.getRawButton(3)||lJoy.getRawButton(3)?1:0)
 			             - (rJoy.getRawButton(2)||lJoy.getRawButton(2)?1:0);
 		forkspeed *= (rJoy.getRawButton(1) || lJoy.getRawButton(1)) ? 1.0 : 0.4;
+		if(sense.forkBottom.get())
+		{
+			forkspeed = Math.max(forkspeed, 0);
+		}
+		if(sense.forkTop.get())
+		{
+			forkspeed = Math.min(forkspeed, 0);
+		}
+
 		drive.setForklift(
 			Math.max(Math.min(forkspeed, 1),-1)
 		);
 //		System.out.println("Right: "+rJoy.getX()+","+rJoy.getY()+" Left: "+lJoy.getX()+","+lJoy.getY());
+//		System.out.println("13: "+sense.forkBottom.get());
 	}
 }

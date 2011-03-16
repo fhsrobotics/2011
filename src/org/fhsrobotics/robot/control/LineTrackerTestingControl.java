@@ -19,7 +19,7 @@ public class LineTrackerTestingControl extends Control
 
 	public LineTrackerTestingControl(Drive drive, Sense sense)
 	{
-		super(drive, sense);
+		super();
 	}
 
 	public void update()

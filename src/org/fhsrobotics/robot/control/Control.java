@@ -17,10 +17,10 @@ public abstract class Control
 	public Drive drive;
 	public Sense sense;
 
-	public Control(Drive drive, Sense sense)
+	public Control()
 	{
-		this.drive = drive;
-		this.sense = sense;
+		drive = Drive.inst();
+		sense = Sense.inst();
 	}
 
 	/**
