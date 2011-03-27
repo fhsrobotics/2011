@@ -1,6 +1,7 @@
 package org.fhsrobotics.robot.control;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.fhsrobotics.robot.Sense;
 
 /**
  * Uses the joysticks to control the robot, with a mecanum drive.
@@ -16,13 +17,25 @@ public class JoystickControl extends Control
 	//If the toggle was pressed last update.
 	boolean enableLast;
 
-	//---Specraise button---
-	private static final int SPECRAISE_BUTTON = 4; //Button #
-	private static final float SPECRAISE_AMOUNT = 0.5f; //In seconds.
-	private int specraiseState;
-	private static final int SPECSTATE_WAIT = 0;
-	private static final int SPECSTATE_DROP = 1;
-	private static final int SPECSTATE_RAISE = 2;
+	//---Switching forklift positional states---
+	/** If the automatic leveling system should be active. */
+	private boolean autoEnabled;
+	/** The speed at which the fork automatically moves to the target. */
+	private double forkAutoSpeed;
+	/** The current level of the forklift. 0 = bottom */
+	private int forkLevel;
+	/** Target for the fork. Will move towards this from the last recorded
+	location until the target is hit or one of the limits are hit. */
+	private int forkTarget;
+	/* A special case is needed:
+	 * If any sensor is jammed, there is a possibility of the top or bottom not
+	 * being detected--this would cause the lift to continue to raise, and
+	 * potentially break the limit switches on either side.
+	 */
+	//Variables to track the pressed state of the joystick auto buttons
+	private boolean button4last = false;
+	private boolean button5last = false;
+	
 
 	//---Rollback button---
 	private static final int ROLLBACK_BUTTON = 5; //Button #
@@ -31,7 +44,6 @@ public class JoystickControl extends Control
 	private static final int ROLLBACK_WAIT = 0;
 	private static final int ROLLBACK_DROP = 1;
 	private static final int ROLLBACK_BACKUP = 2;
-
 	
 	public JoystickControl()
 	{
@@ -39,9 +51,11 @@ public class JoystickControl extends Control
 
 		rJoy = new Joystick(1);
 		lJoy = new Joystick(2);
-
+		
 		enabled = true;
 		enableLast = false;
+
+		forkLevel = Sense.FORK_TOP;
 	}
 
 	public void update()
@@ -50,15 +64,44 @@ public class JoystickControl extends Control
 		double transY = -rJoy.getY()-lJoy.getY();
 		double rotate = -lJoy.getX();
 
-		//---Specraise code---
-		switch(specraiseState)
+		//---Forklift posititoning code---
+		if(autoEnabled)
 		{
-			case SPECSTATE_WAIT:
-			break;
-			case SPECSTATE_DROP:
-			break;
-			
+			if(forkLevel < forkTarget)
+			{
+				drive.setForklift(forkAutoSpeed);
+			}
+			else if(forkLevel > forkTarget)
+			{
+				drive.setForklift(-forkAutoSpeed);
+			}
 		}
+		//Runs for every sensor BUT the top and bottom.
+		for(int i = Sense.FORK_BOTTOM + 1; i <= Sense.FORK_TOP; i++)
+		{
+			if(sense.liftSensors[i].get())
+			{
+				forkLevel = i;
+			}
+		}
+		//Check top and bottom afterwards, so that jams don't kill it all.
+		if(sense.liftSensors[Sense.FORK_BOTTOM].get())
+			forkLevel = Sense.FORK_BOTTOM;
+
+		//---Relative posititoning, automatic---
+		if(!button4last && (rJoy.getRawButton(4) || lJoy.getRawButton(4)))
+		{
+			--forkTarget;
+			autoEnabled = true;
+		}
+		button4last = rJoy.getRawButton(4) || lJoy.getRawButton(4);
+		if(!button5last && (rJoy.getRawButton(5) || lJoy.getRawButton(5)))
+		{
+			++forkTarget;
+			autoEnabled = true;
+		}
+		button5last = rJoy.getRawButton(5) || lJoy.getRawButton(5);
+		
 
 		//---Drive, if the disable combination not pressed---
 		if(enabled)
@@ -76,23 +119,27 @@ public class JoystickControl extends Control
 		enableLast = disablePress;
 
 		//---Forklift control---
-		if(rollbackState == ROLLBACK_WAIT && specraiseState == SPECSTATE_WAIT)
+		if(rollbackState == ROLLBACK_WAIT && !autoEnabled)
 		{
 			double forkspeed = (rJoy.getRawButton(3)||lJoy.getRawButton(3)?1:0)
 							 - (rJoy.getRawButton(2)||lJoy.getRawButton(2)?1:0);
 			forkspeed *= (rJoy.getRawButton(1) || lJoy.getRawButton(1)) ? 1.0 : 0.4;
-			if(sense.forkBottom.get())
+			if(sense.liftSensors[Sense.FORK_BOTTOM].get())
 			{
 				forkspeed = Math.max(forkspeed, 0);
 			}
-			if(sense.forkTop.get())
+			if(sense.liftSensors[Sense.FORK_TOP].get())
 			{
 				forkspeed = Math.min(forkspeed, 0);
 			}
-
-			drive.setForklift(
-				Math.max(Math.min(forkspeed, 1),-1)
-			);
+			if(forkspeed != 0.0)
+			{
+				autoEnabled = false;
+				forkTarget = forkLevel;
+				drive.setForklift(
+					Math.max(Math.min(forkspeed, 1),-1)
+				);
+			}
 		}
 
 //		System.out.println("Right: "+rJoy.getX()+","+rJoy.getY()+" Left: "+lJoy.getX()+","+lJoy.getY());
