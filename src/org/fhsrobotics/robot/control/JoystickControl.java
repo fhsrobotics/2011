@@ -67,7 +67,10 @@ public class JoystickControl extends Control
 		//---Forklift posititoning code---
 		if(autoEnabled)
 		{
+			forkTarget = forkTarget < Sense.FORK_TOP ?
+				forkTarget : (forkTarget > Sense.FORK_BOTTOM ? forkTarget : Sense.FORK_BOTTOM);
 			if(forkLevel < forkTarget)
+				
 			{
 				drive.setForklift(forkAutoSpeed);
 			}
